@@ -22,7 +22,7 @@ namespace Mango.Services.CouponAPI.Data
 
             modelBuilder.Entity<Coupon>().HasData(new Coupon
             {
-                CouponId = 1,
+                CouponId = 2,
                 CouponCode = "20OFF",
                 DiscountAmount = 20,
                 MinAmount = 20,
