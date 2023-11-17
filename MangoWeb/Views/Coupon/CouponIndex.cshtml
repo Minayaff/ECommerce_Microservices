@@ -1,0 +1,110 @@
+﻿@model IEnumerable<CouponDto>
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="text-white">Coupons List</h1>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Coupon" asp-action="CouponCreate" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Coupon</a>
+
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Coupon Code
+                    </th>
+                    <th>
+                        Discount Amount
+                    </th>
+                    <th>
+                        Minimum Amount
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            @item.CouponCode
+                        </td>
+                        <td>
+                            @((item.DiscountAmount).ToString("c"))
+                        </td>
+                        <td>
+                            @((item.MinAmount).ToString("c"))
+                        </td>
+                        <td>
+                            <button data-id="@item.CouponId"   class="deleteButton btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                }
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+
+            $(document).on('click', '.deleteButton', (e) => {
+                    var itemId = $(e.currentTarget).data('id');
+                    console.log(itemId)
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to delete this item.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('/Coupon/CouponDelete', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(itemId)
+                        })
+                                .then(response => {
+                                    if (response.ok) {
+                                    location.href = '/Coupon/CouponIndex'
+                                    } else {
+                                    Swal.fire('Failed to delete item', '', 'info')
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting item:', error);
+                                });
+                        }
+                    });
+                });
+            });
+    </script>
+
+}
